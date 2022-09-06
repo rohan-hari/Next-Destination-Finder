@@ -14,9 +14,9 @@ export default function Header() {
           Travel Advisor
         </Typography>
         <Box display="flex">
-          <Typography variant="h6" className={classes.title}>
-            Travel Advisor
-          </Typography>
+          {/* <Typography variant="h6" className={classes.title}>
+          
+          </Typography> */}
           {/* <Autocomplete> */}
           <div className={classes.search}>
             <div className={classes.searchIcon}>
