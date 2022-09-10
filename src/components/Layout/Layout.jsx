@@ -1,7 +1,7 @@
 import React from 'react';
 import { CssBaseline, Grid } from '@material-ui/core';
 
-import Navbar from './navbar/navbar';
+import Navbar from './navbar/Navbar';
 export default function Layout(props) {
   return (
     <>

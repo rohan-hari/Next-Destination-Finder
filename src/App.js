@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import { CssBaseline, Grid } from '@material-ui/core';
 
-import Layout from './components/Layout/Layout';
+import Navbar from './components/Navbar/Navbar';
 import List from './components/List/List';
 import Map from './components/Map/Map';
 
@@ -46,28 +46,32 @@ const App = () => {
   }, [coordinates.lat, coordinates.lng, type, bounds]);
 
   return (
-    <Layout>
-      <Grid item xs={12} md={4}>
-        <List
-          places={filteredPlaces?.length ? filteredPlaces : places}
-          isLoading={isLoading}
-          type={type}
-          setType={setType}
-          rating={rating}
-          setRating={setRating}
-          childClicked={childClicked}
-        />
+    <>
+      <CssBaseline />
+      <Navbar setCoordinates={setCoordinates} />
+      <Grid container spacing={3} style={{ width: '100%' }}>
+        <Grid item xs={12} md={4}>
+          <List
+            places={filteredPlaces?.length ? filteredPlaces : places}
+            isLoading={isLoading}
+            type={type}
+            setType={setType}
+            rating={rating}
+            setRating={setRating}
+            childClicked={childClicked}
+          />
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <Map
+            coordinates={coordinates}
+            setCoordinates={setCoordinates}
+            setBounds={setBounds}
+            places={filteredPlaces?.length ? filteredPlaces : places}
+            setChildClicked={setChildClicked}
+          />
+        </Grid>
       </Grid>
-      <Grid item xs={12} md={8}>
-        <Map
-          coordinates={coordinates}
-          setCoordinates={setCoordinates}
-          setBounds={setBounds}
-          places={filteredPlaces?.length ? filteredPlaces : places}
-          setChildClicked={setChildClicked}
-        />
-      </Grid>
-    </Layout>
+    </>
   );
 };
 
