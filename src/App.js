@@ -1,73 +1,93 @@
 import React, { useState, useEffect } from 'react';
 import { CssBaseline, Grid } from '@material-ui/core';
 
+import { getPlacesData, getWeatherData } from './api/travelAdvisorAPI';
 import Navbar from './components/Navbar/Navbar';
 import List from './components/List/List';
 import Map from './components/Map/Map';
 
-import { getPlacesData } from './api';
-
 const App = () => {
-  const [coordinates, setCoordinates] = useState({});
-  const [bounds, setBounds] = useState({});
-  const [childClicked, setChildClicked] = useState(null);
-
-  const [places, setPlaces] = useState([]);
-  const [filteredPlaces, setFilteredPlaces] = useState([]);
-
-  const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState('restaurants');
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState('');
+
+  const [coords, setCoords] = useState({});
+  const [bounds, setBounds] = useState(null);
+
+  const [filteredPlaces, setFilteredPlaces] = useState([]);
+  const [places, setPlaces] = useState([]);
+
+  const [autocomplete, setAutocomplete] = useState(null);
+  const [childClicked, setChildClicked] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude, longitude } }) => {
-        setCoordinates({ lat: latitude, lng: longitude });
+        setCoords({ lat: latitude, lng: longitude });
       }
     );
   }, []);
 
   useEffect(() => {
-    const filtered = places?.filter((place) => Number(place.rating) > rating);
+    const filtered = places.filter((place) => Number(place.rating) > rating);
+
     setFilteredPlaces(filtered);
-  }, [places, rating]);
+  }, [rating]);
 
   useEffect(() => {
-    if (bounds.sw && bounds.ne) {
+    if (bounds) {
       setIsLoading(true);
 
       getPlacesData(type, bounds.sw, bounds.ne).then((data) => {
-        setPlaces(data?.filter((place) => place.name && place.num_reviews > 0));
+        setPlaces(data.filter((place) => place.name && place.num_reviews > 0));
         setFilteredPlaces([]);
-        setRating(0);
+        setRating('');
         setIsLoading(false);
       });
     }
-  }, [coordinates.lat, coordinates.lng, type, bounds]);
+  }, [bounds, type]);
+
+  const onLoad = (autoC) => setAutocomplete(autoC);
+
+  const onPlaceChanged = () => {
+    const lat = autocomplete.getPlace().geometry.location.lat();
+    const lng = autocomplete.getPlace().geometry.location.lng();
+
+    setCoords({ lat, lng });
+  };
 
   return (
     <>
       <CssBaseline />
-      <Navbar setCoordinates={setCoordinates} />
+      <Navbar onPlaceChanged={onPlaceChanged} onLoad={onLoad} />
       <Grid container spacing={3} style={{ width: '100%' }}>
         <Grid item xs={12} md={4}>
           <List
-            places={filteredPlaces?.length ? filteredPlaces : places}
             isLoading={isLoading}
+            childClicked={childClicked}
+            places={filteredPlaces.length ? filteredPlaces : places}
             type={type}
             setType={setType}
             rating={rating}
             setRating={setRating}
-            childClicked={childClicked}
           />
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid
+          item
+          xs={12}
+          md={8}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
           <Map
-            coordinates={coordinates}
-            setCoordinates={setCoordinates}
-            setBounds={setBounds}
-            places={filteredPlaces?.length ? filteredPlaces : places}
             setChildClicked={setChildClicked}
+            setBounds={setBounds}
+            setCoords={setCoords}
+            coords={coords}
+            places={filteredPlaces.length ? filteredPlaces : places}
           />
         </Grid>
       </Grid>
