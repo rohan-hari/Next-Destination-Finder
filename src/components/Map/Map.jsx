@@ -8,6 +8,7 @@ import useStyles from './styles';
 
 export default function Map({
   coordinates,
+
   setCoordinates,
   setBounds,
   places,
