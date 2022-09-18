@@ -5,7 +5,7 @@ import Rating from "@material-ui/lab/Rating";
 
 import useStyles from "./styles.js";
 
-export default function Marker({ place, id }) {
+export default function Marker({ place }) {
   const matches = useMediaQuery("(min-width:600px)");
   const classes = useStyles();
   return (
