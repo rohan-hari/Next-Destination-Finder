@@ -5,7 +5,7 @@ import SearchIcon from "@material-ui/icons/Search";
 
 import useStyles from "./styles.js";
 
-const Header = ({ onPlaceChanged, onLoad }) => {
+const Navbar = ({ onPlaceChanged, onLoad }) => {
   const classes = useStyles();
 
   return (
@@ -32,4 +32,4 @@ const Header = ({ onPlaceChanged, onLoad }) => {
   );
 };
 
-export default Header;
+export default Navbar;
